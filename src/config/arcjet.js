@@ -15,7 +15,6 @@ export const aj = arcjet({
       allow: [
         "CATEGORY:SEARCH_ENGINE",
         // allow legitimate search engine bots
-        // see full list at https://arcjet.com/bot-list
       ],
     }),
 

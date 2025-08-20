@@ -15,13 +15,15 @@ export const getUserProfile = asyncHandler(async (req, res) => {
 
 export const updateProfile = asyncHandler(async (req, res) => {
   const { userId } = getAuth(req);
-
-  const user = await User.findOneAndUpdate({ clerkId: userId }, req.body, { new: true });
+  const user = await User.findOneAndUpdate({ clerkId: userId }, req.body, {
+    new: true,
+  });
 
   if (!user) return res.status(404).json({ error: "User not found" });
 
   res.status(200).json({ user });
 });
+
 
 export const syncUser = asyncHandler(async (req, res) => {
   const { userId } = getAuth(req);
@@ -29,7 +31,9 @@ export const syncUser = asyncHandler(async (req, res) => {
   // check if user already exists in mongodb
   const existingUser = await User.findOne({ clerkId: userId });
   if (existingUser) {
-    return res.status(200).json({ user: existingUser, message: "User already exists" });
+    return res
+      .status(200)
+      .json({ user: existingUser, message: "User already exists" });
   }
 
   // create new user from Clerk data
@@ -49,6 +53,7 @@ export const syncUser = asyncHandler(async (req, res) => {
   res.status(201).json({ user, message: "User created successfully" });
 });
 
+
 export const getCurrentUser = asyncHandler(async (req, res) => {
   const { userId } = getAuth(req);
   const user = await User.findOne({ clerkId: userId });
@@ -58,16 +63,20 @@ export const getCurrentUser = asyncHandler(async (req, res) => {
   res.status(200).json({ user });
 });
 
+
+
 export const followUser = asyncHandler(async (req, res) => {
   const { userId } = getAuth(req);
   const { targetUserId } = req.params;
 
-  if (userId === targetUserId) return res.status(400).json({ error: "You cannot follow yourself" });
+  if (userId === targetUserId)
+    return res.status(400).json({ error: "You cannot follow yourself" });
 
   const currentUser = await User.findOne({ clerkId: userId });
   const targetUser = await User.findById(targetUserId);
 
-  if (!currentUser || !targetUser) return res.status(404).json({ error: "User not found" });
+  if (!currentUser || !targetUser)
+    return res.status(404).json({ error: "User not found" });
 
   const isFollowing = currentUser.following.includes(targetUserId);
 
@@ -97,6 +106,8 @@ export const followUser = asyncHandler(async (req, res) => {
   }
 
   res.status(200).json({
-    message: isFollowing ? "User unfollowed successfully" : "User followed successfully",
+    message: isFollowing
+      ? "User unfollowed successfully"
+      : "User followed successfully",
   });
 });
